@@ -5,7 +5,7 @@ Utility Apps for S/4 Public Cloud & BTP ABAP Environment (ABAP for Cloud Only)
 
 * HTTP Client
 * HTTP Server
-* DDIC Quickview (Tables, Views, Structures)
+* DDIC View (Tables, Views, Structures)
 * Quick View Table Content
 * Transport of Copies
 
