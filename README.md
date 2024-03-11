@@ -1,4 +1,4 @@
-# a2UI5- ABAP Cloud Toolkit
+# ABAP Cloud Toolkit
 Utility Apps for S/4 Public Cloud & BTP ABAP Environment (ABAP for Cloud Only)
 
 ### Apps
