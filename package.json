@@ -1,0 +1,20 @@
+{
+    "name": "rename",
+    "version": "1.0.0",
+    "description": "Example Renaming Magic",
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/abap2UI5/mirror-demo-abap2UI5"
+    },
+    "license": "MIT",
+    "homepage": "https://github.com/abap2UI5/mirror-demo-abap2UI5#readme",
+    "dependencies": {
+      "@abaplint/cli": "^2.113.6"
+    },
+    "scripts" : {
+      "clone_abap2ui5": "git clone https://github.com/abap2UI5/abap2UI5.git input/abap2UI5",
+      "rename": "abaplint abaplint_rename.json --rename && rm src/z* && cp output/input/abap2UI5/src/01/00/03/z* src/",
+      "cleanup": "rm -rf input && rm -rf output",
+      "mirror": "npm run clone_abap2ui5 && npm run rename"
+    }
+  }
