@@ -6,7 +6,12 @@
     {
       "url": "https://github.com/abapedia/steampunk-2305-api-intersect-702",
       "folder": "/deps",
+      "files": "/src/**/*.*",
+    {
+      "url": "https://github.com/oblomov-dev/abap-api",
+      "folder": "/abap2UI5",
       "files": "/src/**/*.*"
+    }
     }
   ],
   "syntax": {
