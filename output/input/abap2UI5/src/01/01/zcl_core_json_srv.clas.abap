@@ -1,0 +1,232 @@
+CLASS zcl_core_json_srv DEFINITION
+  PUBLIC
+  FINAL
+  CREATE PUBLIC .
+
+  PUBLIC SECTION.
+
+    INTERFACES zif_ajson_filter .
+
+    METHODS request_json_to_abap
+      IMPORTING
+        val           TYPE string
+      RETURNING
+        VALUE(result) TYPE zif_core_types=>ty_s_http_request_post .
+
+    METHODS response_abap_to_json
+      IMPORTING
+        val           TYPE zif_core_types=>ty_s_http_response_post
+      RETURNING
+        VALUE(result) TYPE string .
+
+    METHODS model_front_to_back
+      IMPORTING
+        view    TYPE string
+        t_attri TYPE REF TO zif_core_types=>ty_t_attri
+        model   TYPE REF TO zif_ajson .
+
+    METHODS model_back_to_front
+      IMPORTING
+        t_attri       TYPE REF TO zif_core_types=>ty_t_attri
+      RETURNING
+        VALUE(result) TYPE string .
+
+  PROTECTED SECTION.
+  PRIVATE SECTION.
+ENDCLASS.
+
+
+
+CLASS zcl_core_json_srv IMPLEMENTATION.
+
+
+  METHOD model_front_to_back.
+
+    IF line_exists( t_attri->*[ view = view ] ).
+      DATA(lv_view) = view.
+    ELSE.
+      lv_view = zif_client=>cs_view-main.
+    ENDIF.
+
+    LOOP AT t_attri->* REFERENCE INTO DATA(lr_attri)
+      WHERE bind_type = zif_core_types=>cs_bind_type-two_way
+      AND view  = lv_view.
+      TRY.
+
+          DATA(lo_val_front) = model->slice( lr_attri->name_client ).
+          IF lo_val_front IS NOT BOUND.
+            CONTINUE.
+          ENDIF.
+
+          IF lr_attri->custom_mapper_back IS BOUND.
+            lo_val_front = lo_val_front->map( lr_attri->custom_mapper_back ).
+          ENDIF.
+
+          IF lr_attri->custom_filter_back IS BOUND.
+            lo_val_front = lo_val_front->filter( lr_attri->custom_filter_back ).
+          ENDIF.
+
+          ASSIGN lr_attri->r_ref->* TO FIELD-SYMBOL(<val>).
+
+          lo_val_front->to_abap(
+            IMPORTING
+              ev_container = <val> ).
+
+        CATCH cx_root INTO DATA(x).
+          zcl_util=>x_raise( |JSON_PARSING_ERROR: { x->get_text( ) } | ).
+      ENDTRY.
+    ENDLOOP.
+
+
+  ENDMETHOD.
+
+
+  METHOD model_back_to_front.
+    TRY.
+
+        DATA(ajson_result) = CAST zif_ajson( zcl_ajson=>create_empty( ) ).
+        LOOP AT t_attri->* REFERENCE INTO DATA(lr_attri) WHERE bind_type <> ``.
+
+          IF lr_attri->custom_mapper IS BOUND.
+            DATA(ajson) = CAST zif_ajson( zcl_ajson=>create_empty( ii_custom_mapping = lr_attri->custom_mapper ) ).
+          ELSE.
+            ajson = CAST zif_ajson( zcl_ajson=>create_empty( ii_custom_mapping = zcl_ajson_mapping=>create_upper_case( ) ) ).
+          ENDIF.
+
+          CASE lr_attri->bind_type.
+            WHEN zif_core_types=>cs_bind_type-one_way
+            OR zif_core_types=>cs_bind_type-two_way.
+
+              ASSIGN lr_attri->r_ref->* TO FIELD-SYMBOL(<attribute>).
+              ASSERT sy-subrc = 0.
+              ajson->set( iv_ignore_empty = abap_false iv_path = `/` iv_val = <attribute> ).
+
+            WHEN zif_core_types=>cs_bind_type-one_time.
+              ajson->set( iv_ignore_empty = abap_false iv_path = `/` iv_val = lr_attri->json_bind_local ).
+
+            WHEN OTHERS.
+              ASSERT `` = `ERROR_UNKNOWN_BIND_MODE`.
+          ENDCASE.
+
+          IF lr_attri->custom_filter IS BOUND.
+            ajson = ajson->filter( lr_attri->custom_filter ).
+          ENDIF.
+
+          ajson_result->set( iv_path = lr_attri->name_client iv_val = ajson ).
+        ENDLOOP.
+
+        result = ajson_result->stringify( ).
+        result = COND #( WHEN result IS INITIAL THEN `{}` ELSE result ).
+
+      CATCH cx_root INTO DATA(x).
+        ASSERT x IS NOT BOUND.
+    ENDTRY.
+  ENDMETHOD.
+
+
+  METHOD request_json_to_abap.
+    TRY.
+
+        DATA(lo_ajson) = CAST zif_ajson( zcl_ajson=>parse( val ) ).
+
+        DATA(lv_model_edit_name) = `/` && zif_core_types=>cs_ui5-two_way_model.
+
+        result-o_model = zcl_ajson=>create_empty( ).
+        DATA(lo_model) = lo_ajson->slice( lv_model_edit_name ).
+        result-o_model->set( iv_path = lv_model_edit_name iv_val = lo_model ).
+        lo_ajson->delete( lv_model_edit_name ).
+
+        lo_ajson = lo_ajson->slice( `/S_FRONT` ).
+        lo_ajson->to_abap(
+            EXPORTING
+               iv_corresponding = abap_true
+            IMPORTING
+                ev_container    = result-s_front ).
+
+        result-s_front-o_comp_data = lo_ajson->slice( `/COMPDATA` ).
+
+        result-s_control-check_launchpad = xsdbool( result-s_front-search CS `scenario=LAUNCHPAD` OR result-s_front-pathname CS `/ui2/flp`).
+        IF result-s_front-id IS NOT INITIAL.
+          RETURN.
+        ENDIF.
+
+        TRY.
+            DATA(lo_comp) = result-s_front-o_comp_data.
+            result-s_control-app_start = lo_comp->get( `/startupParameters/app_start/1` ).
+            result-s_control-app_start = zcl_util=>c_trim_upper( result-s_control-app_start ).
+          CATCH cx_root.
+        ENDTRY.
+
+        IF result-s_control-app_start IS NOT INITIAL.
+          IF result-s_control-app_start(1) = `-`.
+            REPLACE FIRST OCCURRENCE OF `-` IN result-s_control-app_start WITH `/`.
+            REPLACE FIRST OCCURRENCE OF `-` IN result-s_control-app_start WITH `/`.
+          ENDIF.
+          RETURN.
+        ENDIF.
+
+        result-s_control-app_start = zcl_util=>c_trim_upper(
+        zcl_util=>url_param_get( val = `app_start` url = result-s_front-search ) ).
+
+      CATCH cx_root INTO DATA(x).
+        RAISE EXCEPTION TYPE zcx_util_error
+          EXPORTING
+            val = x.
+    ENDTRY.
+  ENDMETHOD.
+
+
+  METHOD response_abap_to_json.
+    TRY.
+
+        DATA(ajson_result) = CAST zif_ajson( zcl_ajson=>create_empty(
+          ii_custom_mapping = zcl_ajson_mapping=>create_upper_case( ) ) ).
+
+        ajson_result->set( iv_path = `/` iv_val = val-s_front ).
+        ajson_result = ajson_result->filter( NEW zcl_core_json_srv( ) ).
+        DATA(lv_frontend) = ajson_result->stringify( ).
+
+        result = `{` &&
+            |"S_FRONT":{ lv_frontend },| &&
+            |"MODEL":{ val-model }| &&
+          `}`.
+
+      CATCH cx_root INTO DATA(x).
+        ASSERT x IS NOT BOUND.
+    ENDTRY.
+  ENDMETHOD.
+
+
+  METHOD zif_ajson_filter~keep_node.
+
+    rv_keep = abap_true.
+
+    CASE iv_visit.
+
+      WHEN zif_ajson_filter=>visit_type-value.
+
+        CASE is_node-type.
+          WHEN zif_ajson_types=>node_type-boolean.
+            IF is_node-value = `false`.
+              rv_keep = abap_false.
+            ENDIF.
+          WHEN zif_ajson_types=>node_type-number.
+            IF is_node-value = `0`.
+              rv_keep = abap_false.
+            ENDIF.
+          WHEN zif_ajson_types=>node_type-string.
+            IF is_node-value = ``.
+              rv_keep = abap_false.
+            ENDIF.
+        ENDCASE.
+
+      WHEN zif_ajson_filter=>visit_type-close.
+
+        IF is_node-children = 0.
+          rv_keep = abap_false.
+        ENDIF.
+
+    ENDCASE.
+
+  ENDMETHOD.
+ENDCLASS.
