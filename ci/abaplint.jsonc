@@ -13,7 +13,6 @@
       "folder": "/abap_api",
       "files": "/src/**/*.*"
     }
-    }
   ],
   "syntax": {
     "version": "v750",
