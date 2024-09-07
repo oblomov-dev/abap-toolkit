@@ -10,7 +10,7 @@
      },
     {
       "url": "https://github.com/oblomov-dev/abap-api",
-      "folder": "/abap2UI5",
+      "folder": "/abap_api",
       "files": "/src/**/*.*"
     }
     }
