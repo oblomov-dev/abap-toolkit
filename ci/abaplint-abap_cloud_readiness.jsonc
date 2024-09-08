@@ -12,7 +12,12 @@
       "url": "https://github.com/oblomov-dev/abap-api",
       "folder": "/abap_api",
       "files": "/src/**/*.*"
-    }
+    },
+    {
+      "url": "https://github.com/sbcgua/ajson",
+      "folder": "/ajson",
+      "files": "/src/**/*.*"
+   }
   ],
   "syntax": {
     "version": "Cloud",
