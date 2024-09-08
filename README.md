@@ -13,8 +13,8 @@ character operations
 zcl_util=>c_trim_upper( ` JsadfHHs  ` ). "->JSADFHHS
 zcl_util=>c_trim_lower( ` JsadfHHs  ` ). "->jsadfhhs
 
-"json w ajson
-zcl_util=>json_stringify( data ). "{"selected":false,"title":"test","value":""}
+"json
+zcl_util=>json_stringify( data ).
 
 "...
 ```
