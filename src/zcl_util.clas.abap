@@ -45,11 +45,13 @@ CLASS zcl_util DEFINITION
 
     TYPES:
       BEGIN OF ty_s_filter_multi,
-        name     TYPE string,
-        t_range  TYPE ty_t_range,
-        t_token  TYPE ty_t_token,
-        s_sql    TYPE ty_S_sql,
-        sql_text TYPE string,
+        name            TYPE string,
+        t_range         TYPE ty_t_range,
+        t_token         TYPE ty_t_token,
+        t_token_added   TYPE ty_t_token,
+        t_token_removed TYPE ty_t_token,
+        s_sql           TYPE ty_S_sql,
+        sql_text        TYPE string,
       END OF ty_s_filter_multi.
     TYPES ty_t_filter_multi TYPE STANDARD TABLE OF ty_s_filter_multi WITH EMPTY KEY.
 
@@ -130,6 +132,12 @@ CLASS zcl_util DEFINITION
     CLASS-METHODS filter_get_multi_by_data
       IMPORTING
         val           TYPE data
+      RETURNING
+        VALUE(result) TYPE ty_t_filter_multi.
+
+    CLASS-METHODS filter_get_data_by_multi
+      IMPORTING
+        val           TYPE ty_t_filter_multi
       RETURNING
         VALUE(result) TYPE ty_t_filter_multi.
 
@@ -331,6 +339,13 @@ CLASS zcl_util DEFINITION
       RETURNING
         VALUE(result) TYPE abap_bool.
 
+    CLASS-METHODS filter_update_tokens
+      IMPORTING
+        val           TYPE ty_t_filter_multi
+        name          TYPE string
+      RETURNING
+        VALUE(result) TYPE ty_t_filter_multi.
+
     CLASS-METHODS filter_get_range_t_by_token_t
       IMPORTING
         val           TYPE ty_t_token
@@ -362,6 +377,12 @@ CLASS zcl_util DEFINITION
     CLASS-METHODS itab_filter_by_val
       IMPORTING
         val TYPE clike
+      CHANGING
+        tab TYPE STANDARD TABLE.
+
+    CLASS-METHODS itab_filter_by_t_range
+      IMPORTING
+        val TYPE ty_t_filter_multi
       CHANGING
         tab TYPE STANDARD TABLE.
 
@@ -732,6 +753,27 @@ CLASS zcl_util IMPLEMENTATION.
   ENDMETHOD.
 
 
+  METHOD filter_update_tokens.
+
+    result = val.
+    DATA(lr_filter) = REF #( result[ name = name ] ).
+    LOOP AT lr_filter->t_token_removed INTO DATA(ls_token).
+      DELETE lr_filter->t_token WHERE key = ls_token-key.
+    ENDLOOP.
+
+    LOOP AT lr_filter->t_token_added INTO ls_token.
+      INSERT VALUE #( key = ls_token-key text = ls_token-text visible = abap_true editable = abap_true ) INTO TABLE lr_filter->t_token.
+    ENDLOOP.
+
+    CLEAR lr_filter->t_token_removed.
+    CLEAR lr_filter->t_token_added.
+
+    data(lt_token) = result[ name = name ]-t_token.
+    data(lt_range) = zcl_util=>filter_get_range_t_by_token_t( result[ name = name ]-t_token ).
+    lr_filter->t_range = lt_range.
+
+  ENDMETHOD.
+
   METHOD filter_get_range_t_by_token_t.
 
     LOOP AT val INTO DATA(ls_token).
@@ -766,7 +808,7 @@ CLASS zcl_util IMPLEMENTATION.
 
     itab_corresponding(
       EXPORTING
-        val = lt_tab
+        val = val
       CHANGING
         tab = lt_tab
     ).
@@ -1440,4 +1482,16 @@ CLASS zcl_util IMPLEMENTATION.
     ENDLOOP.
 
   ENDMETHOD.
+
+
+  METHOD itab_filter_by_t_range.
+
+  ENDMETHOD.
+
+  METHOD filter_get_data_by_multi.
+
+
+
+  ENDMETHOD.
+
 ENDCLASS.
