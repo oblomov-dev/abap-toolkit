@@ -38,22 +38,25 @@ CLASS zcl_util DEFINITION
     TYPES ty_t_range TYPE STANDARD TABLE OF ty_s_range WITH EMPTY KEY.
 
     TYPES:
-      BEGIN OF ty_s_sql,
-        tabname TYPE string,
-        where   TYPE string,
-      END OF ty_s_sql.
-
-    TYPES:
       BEGIN OF ty_s_filter_multi,
         name            TYPE string,
         t_range         TYPE ty_t_range,
         t_token         TYPE ty_t_token,
         t_token_added   TYPE ty_t_token,
         t_token_removed TYPE ty_t_token,
-        s_sql           TYPE ty_S_sql,
-        sql_text        TYPE string,
       END OF ty_s_filter_multi.
     TYPES ty_t_filter_multi TYPE STANDARD TABLE OF ty_s_filter_multi WITH EMPTY KEY.
+
+    TYPES:
+      BEGIN OF ty_S_sql,
+        tabname        TYPE string,
+        check_autoload TYPE abap_bool,
+        layout_id      TYPE string,
+        count          TYPE i,
+        t_ref          TYPE REF TO data,
+        where          TYPE string,
+        t_filter       TYPE ty_t_filter_multi,
+      END OF ty_s_sql.
 
     CLASS-METHODS rtti_get_t_attri_by_include
       IMPORTING
@@ -140,6 +143,13 @@ CLASS zcl_util DEFINITION
         val           TYPE ty_t_filter_multi
       RETURNING
         VALUE(result) TYPE ty_t_filter_multi.
+
+    CLASS-METHODS filter_get_sql_where
+      IMPORTING
+        val           TYPE  zcl_util=>ty_t_filter_multi
+      RETURNING
+        VALUE(result) TYPE string.
+
 
     CLASS-METHODS filter_get_sql_by_sql_string
       IMPORTING
@@ -768,8 +778,8 @@ CLASS zcl_util IMPLEMENTATION.
     CLEAR lr_filter->t_token_removed.
     CLEAR lr_filter->t_token_added.
 
-    data(lt_token) = result[ name = name ]-t_token.
-    data(lt_range) = zcl_util=>filter_get_range_t_by_token_t( result[ name = name ]-t_token ).
+    DATA(lt_token) = result[ name = name ]-t_token.
+    DATA(lt_range) = zcl_util=>filter_get_range_t_by_token_t( result[ name = name ]-t_token ).
     lr_filter->t_range = lt_range.
 
   ENDMETHOD.
@@ -1436,6 +1446,11 @@ CLASS zcl_util IMPLEMENTATION.
 
   METHOD rtti_get_t_attri_by_table_name.
 
+    IF table_name IS INITIAL.
+      RAISE EXCEPTION TYPE zcx_util_error
+        EXPORTING
+          val = 'TABLE_NAME_INITIAL_ERROR'.
+    ENDIF.
     TRY.
         DATA(lo_struct) = CAST cl_abap_structdescr( cl_abap_structdescr=>describe_by_name( table_name ) ).
       CATCH cx_root.
@@ -1491,6 +1506,21 @@ CLASS zcl_util IMPLEMENTATION.
   METHOD filter_get_data_by_multi.
 
 
+
+  ENDMETHOD.
+
+  METHOD filter_get_sql_where.
+
+    LOOP AT val INTO DATA(ls_filter).
+
+      DATA lo_range TYPE REF TO lcl_range_to_sql.
+
+      CREATE OBJECT lo_range
+        EXPORTING
+          iv_fieldname = ls_filter-name
+          ir_range     = REF #( ls_filter-t_range ).
+
+    ENDLOOP.
 
   ENDMETHOD.
 
