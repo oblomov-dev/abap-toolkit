@@ -9,7 +9,7 @@
     "license": "MIT",
     "homepage": "https://github.com/abap2UI5/mirror-demo-abap2UI5#readme",
     "dependencies": {
-      "@abaplint/cli": "^2.113.17"
+      "@abaplint/cli": "^2.113.34"
     },
     "scripts" : {
       "clone_abap2ui5": "git clone https://github.com/abap2UI5/abap2UI5.git input/abap2UI5",
