@@ -60,17 +60,18 @@ CLASS zcl_util DEFINITION
       END OF ty_s_sql.
 
     TYPES:
-      BEGIN OF ty_S_msg,
-        text TYPE string,
-        id   TYPE string,
-        no   TYPE string,
-        type TYPE string,
-        v1   TYPE string,
-        v2   TYPE string,
-        v3   TYPE string,
-        v4   TYPE string,
+      BEGIN OF ty_s_msg,
+        text       TYPE string,
+        id         TYPE string,
+        no         TYPE string,
+        type       TYPE string,
+        v1         TYPE string,
+        v2         TYPE string,
+        v3         TYPE string,
+        v4         TYPE string,
+        timestampl TYPE timestampl,
       END OF ty_s_msg,
-      ty_T_msg TYPE STANDARD TABLE OF ty_S_msg WITH EMPTY KEY.
+      ty_t_msg TYPE STANDARD TABLE OF ty_S_msg WITH EMPTY KEY.
 
     CLASS-METHODS ui5_get_msg_type
       IMPORTING
@@ -82,7 +83,7 @@ CLASS zcl_util DEFINITION
       IMPORTING
         val           TYPE any
       RETURNING
-        VALUE(result) TYPE ty_T_msg.
+        VALUE(result) TYPE ty_t_msg.
 
     CLASS-METHODS rtti_get_t_attri_by_include
       IMPORTING
@@ -1400,96 +1401,7 @@ CLASS zcl_util IMPLEMENTATION.
 
   METHOD msg_get.
 
-    DATA(lv_kind) = zcl_util=>rtti_get_type_kind( val ).
-    CASE lv_kind.
-
-      WHEN cl_abap_datadescr=>typekind_table.
-        FIELD-SYMBOLS <tab> TYPE STANDARD TABLE.
-        ASSIGN val TO <tab>.
-        LOOP AT <tab> ASSIGNING FIELD-SYMBOL(<row>).
-          DATA(lt_tab) = msg_get( <row> ).
-          INSERT LINES OF lt_tab INTO TABLE result.
-        ENDLOOP.
-
-      WHEN cl_abap_datadescr=>typekind_struct1 OR cl_abap_datadescr=>typekind_struct2.
-
-        IF val IS INITIAL.
-          RETURN.
-        ENDIF.
-
-        DATA(lt_attri) = zcl_util=>rtti_get_t_attri_by_any( val ).
-
-        DATA(ls_result) = VALUE ty_s_msg( ).
-        LOOP AT lt_attri REFERENCE INTO DATA(ls_attri).
-          DATA(lv_name) = |VAL-{ ls_attri->name }|.
-          ASSIGN (lv_name) TO FIELD-SYMBOL(<comp>).
-          CASE ls_attri->name.
-            WHEN 'ID' OR 'MSGID'.
-              ls_result-id = <comp>.
-            WHEN 'NO' OR 'NUMBER' OR 'MSGNO'.
-              ls_result-no = <comp>.
-            WHEN 'MESSAGE' OR 'TEXT'.
-              ls_result-text = <comp>.
-            WHEN 'TYPE' OR 'MSGTY'.
-              ls_result-type = <comp>.
-            WHEN 'MESSAGE_V1' OR 'MSGV1' OR 'V1'.
-              ls_result-v1 = <comp>.
-            WHEN 'MESSAGE_V2' OR 'MSGV2' OR 'V2'.
-              ls_result-v2 = <comp>.
-            WHEN 'MESSAGE_V3' OR 'MSGV3' OR 'V3'.
-              ls_result-v3 = <comp>.
-            WHEN 'MESSAGE_V4' OR 'MSGV4' OR 'V4'.
-              ls_result-v4 = <comp>.
-          ENDCASE.
-        ENDLOOP.
-        IF ls_result-text IS INITIAL AND ls_result-id IS NOT INITIAL.
-          MESSAGE ID ls_result-id TYPE 'I' NUMBER ls_result-no
-                  WITH ls_result-v1 ls_result-v2 ls_result-v3 ls_result-v4
-                  INTO ls_result-text.
-        ENDIF.
-        INSERT ls_result INTO TABLE result.
-
-      WHEN cl_abap_datadescr=>typekind_oref.
-        TRY.
-            DATA(lx) = CAST cx_root( val ).
-            ls_result = VALUE #( type = 'E' text = lx->get_text( ) ).
-            DATA(lt_attri_o) = zcl_util=>rtti_get_t_attri_by_oref( val ).
-            LOOP AT lt_attri_o REFERENCE INTO DATA(ls_attri_o)
-                 WHERE visibility = 'U'.
-              lv_name = |VAL->{ ls_attri_o->name }|.
-              ASSIGN (lv_name) TO <comp>.
-              CASE ls_attri_o->name.
-                WHEN 'ID' OR 'MSGID'.
-                  ls_result-id = <comp>.
-                WHEN 'NO' OR 'NUMBER' OR 'MSGNO'.
-                  ls_result-no = <comp>.
-                WHEN 'MESSAGE'.
-                  ls_result-text = <comp>.
-                WHEN 'TYPE' OR 'MSGTY'.
-                  ls_result-type = <comp>.
-                WHEN 'MESSAGE_V1' OR 'MSGV1'.
-                  ls_result-v1 = <comp>.
-                WHEN 'MESSAGE_V2' OR 'MSGV2'.
-                  ls_result-v2 = <comp>.
-                WHEN 'MESSAGE_V3' OR 'MSGV3'.
-                  ls_result-v3 = <comp>.
-                WHEN 'MESSAGE_V4' OR 'MSGV4'.
-                  ls_result-v4 = <comp>.
-              ENDCASE.
-
-            ENDLOOP.
-            INSERT ls_result INTO TABLE result.
-          CATCH cx_root.
-        ENDTRY.
-
-      WHEN OTHERS.
-
-        IF rtti_check_clike( val ).
-          INSERT VALUE #( text = val
-          )
-                 INTO TABLE result.
-        ENDIF.
-    ENDCASE.
+    result = lcl_msp_mapper=>msg_get( val ).
 
   ENDMETHOD.
 
@@ -1512,8 +1424,8 @@ CLASS zcl_util IMPLEMENTATION.
                        WHEN 'E' THEN `Error`
                        WHEN 'S' THEN `Success`
                        WHEN `W` THEN `Warning`
-                       ELSE          `Information`
-                                  ).
+                       ELSE `Information` ).
 
   ENDMETHOD.
+
 ENDCLASS.
