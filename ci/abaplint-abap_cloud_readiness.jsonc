@@ -7,17 +7,7 @@
       "url": "https://github.com/abapedia/steampunk-2305-api-intersect-702",
       "folder": "/deps",
       "files": "/src/**/*.*"
-    },
-    {
-      "url": "https://github.com/oblomov-dev/abap-api",
-      "folder": "/abap_api",
-      "files": "/src/**/*.*"
-    },
-    {
-      "url": "https://github.com/sbcgua/ajson",
-      "folder": "/ajson",
-      "files": "/src/**/*.*"
-   }
+    }
   ],
   "syntax": {
     "version": "Cloud",
