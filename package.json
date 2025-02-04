@@ -14,6 +14,7 @@
     "scripts" : {
       "clone": "git clone https://github.com/abap2UI5/abap2UI5.git input/abap2UI5",
       "rename": "abaplint abaplint_rename.json --rename && rm src/z* && cp output/input/abap2UI5/src/00/03/z* src/",
+      "copy_dependencies": " cp -r output/input/abap2UI5/src/00/01/ src/01/ && cp -r output/input/abap2UI5/src/00/02/ src/02/",
       "cleanup": "rm -rf input && rm -rf output",
       "mirror": "npm run clone && npm run rename"
     }
