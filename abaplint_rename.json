@@ -1,6 +1,6 @@
 {
     "global": {
-      "files": "/input/**/src/**/*.*"
+      "files": "/input/abap2UI5/src/**/*.*"
     },
     "dependencies": [
       {
