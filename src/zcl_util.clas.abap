@@ -1,6 +1,6 @@
 CLASS zcl_util DEFINITION
   PUBLIC
-  INHERITING FROM zcl_abap_api
+  INHERITING FROM zcl_util_abap
   CREATE PUBLIC.
 
   PUBLIC SECTION.
@@ -71,7 +71,7 @@ CLASS zcl_util DEFINITION
         v4         TYPE string,
         timestampl TYPE timestampl,
       END OF ty_s_msg,
-      ty_t_msg TYPE STANDARD TABLE OF ty_S_msg WITH EMPTY KEY.
+      ty_t_msg TYPE STANDARD TABLE OF ty_s_msg WITH EMPTY KEY.
 
     CLASS-METHODS ui5_get_msg_type
       IMPORTING
@@ -96,7 +96,7 @@ CLASS zcl_util DEFINITION
         rollname      TYPE clike
         langu         TYPE clike DEFAULT sy-langu
       RETURNING
-        VALUE(result) TYPE zcl_abap_api=>ty_t_fix_val ##NEEDED.
+        VALUE(result) TYPE zcl_util_abap=>ty_t_fix_val ##NEEDED.
 
     CLASS-METHODS source_get_method2
       IMPORTING
@@ -450,8 +450,6 @@ CLASS zcl_util DEFINITION
       RETURNING
         VALUE(result) TYPE string.
 
-    CLASS-METHODS check_raise_srtti_installed.
-
     CLASS-METHODS rtti_check_clike
       IMPORTING
         val           TYPE any
@@ -804,7 +802,8 @@ CLASS zcl_util IMPLEMENTATION.
     ENDLOOP.
 
     DATA(struc) = cl_abap_structdescr=>get( lt_comp ).
-    DATA(o_table_desc) = cl_abap_tabledescr=>create( p_line_type  = CAST #( struc )
+    DATA(data) = CAST cl_abap_datadescr( struc ).
+    DATA(o_table_desc) = cl_abap_tabledescr=>create( p_line_type  = data
                                                      p_table_kind = cl_abap_tabledescr=>tablekind_std
                                                      p_unique     = abap_false ).
 
@@ -1210,8 +1209,6 @@ CLASS zcl_util IMPLEMENTATION.
 
   METHOD xml_srtti_parse.
 
-    check_raise_srtti_installed( ).
-
     DATA srtti TYPE REF TO object.
     CALL TRANSFORMATION id SOURCE XML rtti_data RESULT srtti = srtti.
 
@@ -1231,17 +1228,39 @@ CLASS zcl_util IMPLEMENTATION.
 
   METHOD xml_srtti_stringify.
 
-    check_raise_srtti_installed( ).
+    IF rtti_check_class_exists( 'ZCL_SRTTI_TYPEDESCR' ) = abap_true.
 
-    DATA srtti TYPE REF TO object.
-    DATA(lv_classname) = 'ZCL_SRTTI_TYPEDESCR'.
-    CALL METHOD (lv_classname)=>('CREATE_BY_DATA_OBJECT')
-      EXPORTING
-        data_object = data
-      RECEIVING
-        srtti       = srtti.
+      DATA srtti TYPE REF TO object.
+      DATA(lv_classname) = `ZCL_SRTTI_TYPEDESCR`.
+      CALL METHOD (lv_classname)=>('CREATE_BY_DATA_OBJECT')
+        EXPORTING
+          data_object = data
+        RECEIVING
+          srtti       = srtti.
 
-    CALL TRANSFORMATION id SOURCE srtti = srtti dobj = data RESULT XML result.
+      CALL TRANSFORMATION id SOURCE srtti = srtti dobj = data RESULT XML result.
+
+    ELSE.
+
+      TRY.
+          CALL METHOD zcl_srt_typedescr=>('CREATE_BY_DATA_OBJECT')
+            EXPORTING
+              data_object = data
+            RECEIVING
+              srtti       = srtti.
+
+          CALL TRANSFORMATION id SOURCE srtti = srtti dobj = data RESULT XML result.
+
+        CATCH cx_root.
+
+          DATA(lv_text) = `UNSUPPORTED_FEATURE - Please install the open-source project S-RTTI by sandraros and try again: https://github.com/sandraros/S-RTTI`.
+          RAISE EXCEPTION TYPE zcx_util_error
+            EXPORTING
+              val = lv_text.
+
+      ENDTRY.
+
+    ENDIF.
 
   ENDMETHOD.
 
@@ -1289,18 +1308,6 @@ CLASS zcl_util IMPLEMENTATION.
 
   ENDMETHOD.
 
-  METHOD check_raise_srtti_installed.
-
-    IF rtti_check_class_exists( 'ZCL_SRTTI_TYPEDESCR' ) = abap_false.
-
-      DATA(lv_text) = `UNSUPPORTED_FEATURE - Please install the open-source project S-RTTI by sandraros and try again: https://github.com/sandraros/S-RTTI`.
-      RAISE EXCEPTION TYPE zcx_util_error
-        EXPORTING
-          val = lv_text.
-
-    ENDIF.
-
-  ENDMETHOD.
 
   METHOD rtti_get_t_attri_by_table_name.
 
