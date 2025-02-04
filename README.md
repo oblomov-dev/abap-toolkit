@@ -17,11 +17,11 @@ character operations
 ```abap
 
 "strings
-zcl_util=>c_trim_upper( ` JsadfHHs  ` ). "->JSADFHHS
-zcl_util=>c_trim_lower( ` JsadfHHs  ` ). "->jsadfhhs
+zoblomov_cl_util=>c_trim_upper( ` JsadfHHs  ` ). "->JSADFHHS
+zoblomov_cl_util=>c_trim_lower( ` JsadfHHs  ` ). "->jsadfhhs
 
 "json
-zcl_util=>json_stringify( data ).
+zoblomov_cl_util=>json_stringify( data ).
 
 "...
 ```
