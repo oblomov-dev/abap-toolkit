@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZOBLOMOV_CX_UTIL_ERROR</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>abap toolkit exception</DESCRIPT>
+    <DESCRIPT>util - exception</DESCRIPT>
     <CATEGORY>40</CATEGORY>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
