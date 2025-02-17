@@ -12,8 +12,8 @@ Utility Functions for S/4 Public Cloud, BTP ABAP Environment & ABAP OnPremise
 * R/3 NetWeaver AS ABAP 7.02 or higher (Standard ABAP)
 
 #### Dependencies
-* [ajson](https://github.com/sbcgua/ajson) (included with zoblomov_cl_json)
-* [S-RTTI](https://github.com/sandraros/S-RTTI) ((included with zoblomov_cl_srti))
+* [ajson](https://github.com/sbcgua/ajson) (included with zoblomov_cl_ajson_)
+* [S-RTTI](https://github.com/sandraros/S-RTTI) ((included with zoblomov_cl_srt_))
   
 #### Usage
 
