@@ -24,8 +24,8 @@ Utility Functions for ABAP Cloud & Standard ABAP
 zoblomov_cl_util=>c_trim_upper( ` JsadfHHs  ` ). "->JSADFHHS
 zoblomov_cl_util=>c_trim_lower( ` JsadfHHs  ` ). "->jsadfhhs
 
-"json
-zoblomov_cl_util=>json_stringify( data ).
+"ajson
+DATA(lv_json) = zoblomov_cl_util=>json_stringify( data ).
 
 "...
 ```
