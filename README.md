@@ -7,8 +7,8 @@ Utility Functions for ABAP Cloud & Standard ABAP
 * Function Scope: GUIDs, RTTI, Messages, Persistence etc.
 
 #### Compatibility
-* S/4 Public Cloud and BTP ABAP Environment (ABAP for Cloud)
-* S/4 Private Cloud or On-Premise (ABAP for Cloud, Standard ABAP)
+* S/4 Public Cloud & BTP ABAP Environment (ABAP for Cloud)
+* S/4 Private Cloud & On-Premise (ABAP for Cloud, Standard ABAP)
 * R/3 NetWeaver AS ABAP 7.02 or higher (Standard ABAP)
 
 #### Dependencies
