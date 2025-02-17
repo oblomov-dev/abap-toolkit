@@ -13,7 +13,7 @@ Utility Functions for S/4 Public Cloud, BTP ABAP Environment & ABAP OnPremise
 
 #### Dependencies
 * [ajson](https://github.com/sbcgua/ajson) (included with zoblomov_cl_ajson_)
-* [S-RTTI](https://github.com/sandraros/S-RTTI) ((included with zoblomov_cl_srt_))
+* [S-RTTI](https://github.com/sandraros/S-RTTI) (included with zoblomov_cl_srt_)
   
 #### Usage
 
