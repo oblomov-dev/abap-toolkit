@@ -11,9 +11,10 @@ Utility Functions for ABAP Cloud & Standard ABAP
 * S/4 Private Cloud and On-Premise (ABAP Cloud, Standard ABAP)
 * R/3 NetWeaver AS ABAP 7.02 or higher (Standard ABAP)
 
-#### Dependencies
-* [ajson](https://github.com/sbcgua/ajson) (included with zoblomov_cl_ajson_)
-* [S-RTTI](https://github.com/sandraros/S-RTTI) (included with zoblomov_cl_srt_)
+#### Credits
+* [ajson](https://github.com/sbcgua/ajson)
+* [S-RTTI](https://github.com/sandraros/S-RTTI)
+* [steampunkification](https://github.com/heliconialabs/steampunkification)
   
 #### Usage
 
