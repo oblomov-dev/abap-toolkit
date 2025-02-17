@@ -1,4 +1,4 @@
-## ABAP Toolkit
+## abap-toolkit
 Utility Functions for ABAP Cloud & Standard ABAP
 
 #### Key Features
