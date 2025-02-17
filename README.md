@@ -1,5 +1,5 @@
 ## ABAP Toolkit
-Utility Functions for S/4 Public Cloud, BTP ABAP Environment & ABAP OnPremise
+Utility Functions for ABAP for Cloud and Standard ABAP
 
 #### Key Features
 * Simplified SAP APIs to class-based methods
@@ -17,7 +17,6 @@ Utility Functions for S/4 Public Cloud, BTP ABAP Environment & ABAP OnPremise
   
 #### Usage
 
-character operations
 ```abap
 
 "strings
