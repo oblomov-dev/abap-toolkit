@@ -1,5 +1,5 @@
 ## ABAP Toolkit
-Utility Functions for ABAP for Cloud and Standard ABAP
+Utility Functions for ABAP Cloud & Standard ABAP
 
 #### Key Features
 * Simplified SAP APIs to class-based methods
