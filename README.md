@@ -2,7 +2,7 @@
 [![ABAP_STANDARD](https://github.com/oblomov-dev/abap-util/actions/workflows/ABAP_STANDARD.yaml/badge.svg)](https://github.com/oblomov-dev/abap-util/actions/workflows/ABAP_STANDARD.yaml)
 [![ABAP_CLOUD](https://github.com/oblomov-dev/abap-util/actions/workflows/ABAP_CLOUD.yaml/badge.svg)](https://github.com/oblomov-dev/abap-util/actions/workflows/ABAP_CLOUD.yaml)
 <br>
-[![auto_build](https://github.com/oblomov-dev/abap-util/actions/workflows/auto_build.yaml/badge.svg)](https://github.com/oblomov-dev/abap-util/actions/workflows/auto_build.yaml)
+[![auto_build](https://github.com/oblomov-dev/abap-util/actions/workflows/auto_build.yml/badge.svg)](https://github.com/oblomov-dev/abap-util/actions/workflows/auto_build.yml)
 
 # abap-util
 Utility Functions for ABAP Cloud & Standard ABAP
