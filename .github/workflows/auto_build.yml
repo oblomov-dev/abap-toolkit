@@ -1,4 +1,4 @@
-name: Cron
+name: auto_build
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
     - cron: '0 0 * * 0'
 
 jobs:
-  build:
+  auto_build:
 
     runs-on: ubuntu-latest
 

@@ -1,13 +1,13 @@
 {
-    "name": "rename",
+    "name": "abap-util",
     "version": "1.0.0",
     "description": "Example Renaming Magic",
     "repository": {
       "type": "git",
-      "url": "git+https://github.com/abap2UI5/mirror-demo-abap2UI5"
+      "url": "git+https://github.com/oblomov-dev/abap-util"
     },
     "license": "MIT",
-    "homepage": "https://github.com/abap2UI5/mirror-demo-abap2UI5#readme",
+    "homepage": "https://github.com/oblomov-dev/abap-util",
     "dependencies": {
       "@abaplint/cli": "^2.113.100"
     },
