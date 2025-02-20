@@ -9,7 +9,7 @@
 [![test_rename](https://github.com/oblomov-dev/abap-util/actions/workflows/test_rename.yaml/badge.svg)](https://github.com/oblomov-dev/abap-util/actions/workflows/test_rename.yaml)
 
 # abap-util
-Utility Functions for ABAP Cloud & Standard ABAP
+Utility Functions for ABAP Cloud & Standard ABAP 
 
 #### Key Features
 * Simplified SAP APIs to class-based methods
