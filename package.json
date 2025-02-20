@@ -25,6 +25,7 @@
       "syfixes": "find . -type f -name '*.abap' -exec sed -i -e 's/ RAISE EXCEPTION TYPE cx_sy_itab_line_not_found/ ASSERT 1 = 0/g' {} + ",
       "downport": "abaplint --fix .github/abaplint/abap_702.jsonc && npm run syfixes",
       "auto_transpile": "rm -rf node/output && cp -r src node/downport && abap_transpile ./node/setup/abap_transpile.json",
-      "unit": "echo RUNNING && node node/output/index.mjs"
+      "unit": "echo RUNNING && node node/output/index.mjs",
+      "rename_test": "abaplint ./.github/abaplint/rename_test.jsonc --rename"
     }
   }
