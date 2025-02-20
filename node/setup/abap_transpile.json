@@ -4,9 +4,6 @@
   "libs": [
     {
       "url": "https://github.com/open-abap/open-abap-core"
-    },
-    {
-      "url": "https://github.com/open-abap/express-icf-shim"
     }
   ],
   "write_unit_tests": true,
