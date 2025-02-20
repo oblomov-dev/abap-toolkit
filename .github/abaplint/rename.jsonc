@@ -9,7 +9,7 @@
       }
     ],
     "rename": {
-      "output": "/../../output",
+      "output": "output",
       "patterns": [
         {
           "type": "CLAS|INTF|TABL",
