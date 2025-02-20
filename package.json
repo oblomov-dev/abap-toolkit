@@ -9,11 +9,11 @@
     "license": "MIT",
     "homepage": "https://github.com/oblomov-dev/abap-util",
     "dependencies": {
-      "@abaplint/cli": "^2.113.100"
+      "@abaplint/cli": "^2.113.104"
     },
     "scripts" : {
       "clone": "git clone https://github.com/abap2UI5/abap2UI5.git input/abap2UI5",
-      "rename": "abaplint ./.github/abaplint/rename.jsonc --rename && rm src/z* && cp output/input/abap2UI5/src/00/03/z* src/",
+      "rename": "abaplint ./.github/abaplint/rename.jsonc --rename && rm src/z* && cp ./.github/input/abap2UI5/src/00/03/z* src/",
       "cleanup": "rm -rf input && rm -rf output",
       "mirror": "npm run clone && npm run rename"
     }
