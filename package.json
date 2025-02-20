@@ -26,6 +26,6 @@
       "downport": "abaplint --fix .github/abaplint/abap_702.jsonc && npm run syfixes",
       "auto_transpile": "rm -rf node/output && cp -r src node/downport && abap_transpile ./node/setup/abap_transpile.json",
       "unit": "echo RUNNING && node node/output/index.mjs",
-      "rename_test": "abaplint ./.github/abaplint/rename_test.jsonc --rename"
+      "rename_test": "abaplint .github/abaplint/rename_test.jsonc --rename"
     }
   }
