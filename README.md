@@ -29,15 +29,21 @@ Utility Functions for ABAP Cloud & Standard ABAP
 #### Usage
 
 ```abap
-
-"strings
+"string
 zoblomov_cl_util=>c_trim_upper( ` JsadfHHs  ` ). "->JSADFHHS
 zoblomov_cl_util=>c_trim_lower( ` JsadfHHs  ` ). "->jsadfhhs
-
+```
+```abap
 "json
-DATA(lv_json) = zoblomov_cl_util=>json_stringify( data ).
+DATA(ls_usr01) = VALUE usr01( bname = 'name' langu = 'E' ).
+DATA(lv_json) = zoblomov_cl_util=>json_stringify( ls_usr01 ).
 
-"...
+DATA(ls_usr01_result) = VALUE usr01( ).
+zoblomov_cl_util=>json_parse(
+  EXPORTING
+    val  = lv_json
+  CHANGING
+    data = ls_usr01 ).
 ```
 
 #### Contribution & Support
