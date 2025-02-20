@@ -34,18 +34,7 @@ Utility Functions for ABAP Cloud & Standard ABAP
 zoblomov_cl_util=>c_trim_upper( ` JsadfHHs  ` ). "->JSADFHHS
 zoblomov_cl_util=>c_trim_lower( ` JsadfHHs  ` ). "->jsadfhhs
 ```
-###### json
-```abap
-DATA(ls_usr01) = VALUE usr01( bname = 'name' langu = 'E' ).
-DATA(lv_json) = zoblomov_cl_util=>json_stringify( ls_usr01 ).
-
-DATA(ls_usr01_result) = VALUE usr01( ).
-zoblomov_cl_util=>json_parse(
-  EXPORTING
-    val  = lv_json
-  CHANGING
-    data = ls_usr01 ).
-```
+...
 
 #### Contribution & Support
 Pull requests are welcome! Whether you're fixing bugs, adding new functionality, or improving documentation, your contributions are highly appreciated. If you encounter any problems, feel free to open an issue.
