@@ -15,7 +15,10 @@
       "@abaplint/transpiler-cli": "^2.10.24",
       "@types/node": "^22.13.4",
       "buffer": "^6.0.3",
-      "express": "^4.21.2"
+      "express": "^4.21.2",
+      "html-webpack-plugin": "^5.6.3",
+      "path-browserify": "^1.0.1",
+      "web-encoding": "^1.1.5"
     },
     "scripts" : {
       "clone": "git clone https://github.com/abap2UI5/abap2UI5.git input/abap2UI5",
