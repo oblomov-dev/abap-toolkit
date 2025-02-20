@@ -16,4 +16,4 @@ jobs:
       with:
         node-version: '16'
     - run: npm ci
-    - run: npm run rename
+    - run: npm run rename_test
